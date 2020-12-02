@@ -61,7 +61,7 @@ class ViewController: UIViewController {
         
        Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ _ in
             if self.progressView.progress != 1 {
-                self.progressView.progress += 0.2
+                self.progressView.progress += 0.1
             } else {
                 self.activityIndicator.stopAnimating()
                 self.textView.isHidden = false
