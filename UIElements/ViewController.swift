@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var stepper: UIStepper!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var progressView: UIProgressView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,6 @@ class ViewController: UIViewController {
         textView.delegate = self
         
         textView.isHidden = true
-        textView.alpha = 0
         
 //        textView.text = ""
         
@@ -44,6 +44,8 @@ class ViewController: UIViewController {
         activityIndicator.startAnimating()
         UIApplication.shared.beginIgnoringInteractionEvents()
         
+        progressView.setProgress(0, animated: true)
+        
         
         // Отслеживаем появление клавиатуры
         NotificationCenter.default.addObserver(self,
@@ -57,15 +59,18 @@ class ViewController: UIViewController {
                                                name: Notification.Name.UIKeyboardWillHide,
                                                object: nil)
         
-        UIView.animate(withDuration: 0, delay: 5, options: .curveEaseIn, animations: {
-            self.textView.alpha = 1
-        }) { (finished) in
-            self.activityIndicator.stopAnimating()
-            self.textView.isHidden = false
-            UIApplication.shared.endIgnoringInteractionEvents()
+       Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ _ in
+            if self.progressView.progress != 1 {
+                self.progressView.progress += 0.2
+            } else {
+                self.activityIndicator.stopAnimating()
+                self.textView.isHidden = false
+                UIApplication.shared.endIgnoringInteractionEvents()
+                self.progressView.isHidden = true
+            }
         }
     }
-        
+    
     // Скрытие клавиатуры по тапу за пределами Text View
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
